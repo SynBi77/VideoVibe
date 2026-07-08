@@ -186,11 +186,31 @@ def analyze_with_gemini(video_path: str, ref_audio_path: str, video_title: str, 
         prompt_parts.append(uploaded_ref)
         
     print("Requesting JSON structured options from Gemini...", flush=True)
+    schema_dict = {
+        "type": "OBJECT",
+        "properties": {
+            "options": {
+                "type": "ARRAY",
+                "items": {
+                    "type": "OBJECT",
+                    "properties": {
+                        "title": {"type": "STRING"},
+                        "description": {"type": "STRING"},
+                        "lyria_prompt": {"type": "STRING"}
+                    },
+                    "required": ["title", "description", "lyria_prompt"]
+                }
+            }
+        },
+        "required": ["options"]
+    }
+    
     response = client.models.generate_content(
         model='gemini-3.5-flash',
         contents=prompt_parts,
         config=types.GenerateContentConfig(
             response_mime_type="application/json",
+            response_schema=types.Schema(**schema_dict),
             temperature=0.7
         )
     )
