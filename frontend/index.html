@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VideoVibe | AI BGM Generator</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <main class="container glass-panel">
+        <header>
+            <div class="logo">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <h1>VideoVibe</h1>
+            </div>
+            <div class="powered-by" style="margin-top: 5px; margin-bottom: 10px; font-size: 0.9rem; color: var(--accent-color); font-weight: 600; letter-spacing: 1px;">
+                Powered by INNOCEAN
+            </div>
+            <p class="subtitle">유튜브 링크 하나로 완벽한 BGM을 작곡하세요.</p>
+        </header>
+
+        <div class="use-cases">
+            <div class="use-case-card">
+                <div class="icon"><i class="fa-solid fa-film"></i></div>
+                <h4>광고/영상 가편집 시안용</h4>
+                <p>작곡가에게 의뢰하기 전, 영상 분위기에 딱 맞는 레퍼런스 BGM을 1분 만에 뽑아보세요.</p>
+            </div>
+            <div class="use-case-card">
+                <div class="icon"><i class="fa-brands fa-tiktok"></i></div>
+                <h4>크리에이터 오리지널 BGM</h4>
+                <p>남들 다 쓰는 뻔한 유행가 대신, 내 영상 텐션에 100% 싱크되는 나만의 저작권 무료 음악을 입히세요.</p>
+            </div>
+        </div>
+
+        <section class="input-section">
+            <div class="input-group">
+                <label for="youtube-url">YouTube 영상 링크</label>
+                <div class="input-wrapper">
+                    <i class="fa-brands fa-youtube"></i>
+                    <input type="url" id="youtube-url" placeholder="https://www.youtube.com/watch?v=..." required>
+                </div>
+                <p class="input-note" style="margin-top: 8px; font-size: 0.8rem; color: rgba(255, 255, 255, 0.6); text-align: left;">
+                    * AI 분석 및 처리 속도를 위해 <strong>3분 이하의 영상</strong>만 지원됩니다.
+                </p>
+            </div>
+
+
+
+            <button id="generate-btn" class="primary-btn">
+                <span>AI 작곡 시작하기</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </section>
+
+        <section class="loading-section hidden" id="loading-state">
+            <div class="loader">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+            <p id="loading-text" class="loading-text">영상의 분위기를 분석하고 있습니다...</p>
+        </section>
+
+        <section class="options-section hidden" id="options-state">
+            <h3>원하는 음악 컨셉을 선택하세요</h3>
+            <p class="subtitle" style="margin-bottom: 20px;">AI가 영상에 어울리는 컨셉을 기획했습니다.</p>
+            <div class="options-container" id="options-container">
+                <!-- Options injected via JS -->
+            </div>
+        </section>
+
+        <section class="result-section hidden" id="result-state">
+            <div class="success-badge">
+                <i class="fa-solid fa-check"></i> 작곡 완료
+            </div>
+            
+            <div class="tweak-panel">
+                <h4><i class="fa-solid fa-sliders"></i> 조금 더 다듬어 볼까요?</h4>
+                <div class="tweak-group">
+                    <span class="tweak-label">템포 (Speed):</span>
+                    <button class="tweak-btn" data-tweak="faster, upbeat, high energy">빠르게</button>
+                    <button class="tweak-btn" data-tweak="slower, relaxed, low energy">느리게</button>
+                </div>
+                <div class="tweak-group">
+                    <span class="tweak-label">강렬함 (Intensity):</span>
+                    <button class="tweak-btn" data-tweak="more intense, epic, heavy, powerful">강렬하게</button>
+                    <button class="tweak-btn" data-tweak="softer, calmer, gentle, ambient">부드럽게</button>
+                </div>
+                <div class="tweak-group">
+                    <span class="tweak-label">분위기 (Mood):</span>
+                    <button class="tweak-btn" data-tweak="brighter, uplifting, happy">밝게</button>
+                    <button class="tweak-btn" data-tweak="darker, tense, mysterious">어둡게</button>
+                </div>
+                <button id="re-generate-btn" class="primary-btn tweak-submit-btn hidden">
+                    <span>최신 곡 이 느낌으로 다시 생성하기</span>
+                    <i class="fa-solid fa-rotate-right"></i>
+                </button>
+            </div>
+            
+            <div id="track-history-container" class="track-history">
+                <!-- 동적으로 생성된 곡들이 여기에 맨 위부터 추가됩니다 -->
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
