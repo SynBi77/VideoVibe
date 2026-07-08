@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -245,6 +246,10 @@ def generate_music_endpoint(request: GenerateRequest):
     except Exception as e:
         print(f"Error in /api/generate: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/")
+def read_root():
+    return FileResponse("frontend/index.html")
 
 # Serve frontend static files
 app.mount("/", StaticFiles(directory="frontend", html=True), name="frontend")
