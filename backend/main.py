@@ -186,31 +186,12 @@ def analyze_with_gemini(video_path: str, ref_audio_path: str, video_title: str, 
         prompt_parts.append(uploaded_ref)
         
     print("Requesting JSON structured options from Gemini...", flush=True)
-    response_schema = types.Schema(
-        type=types.Type.OBJECT,
-        properties={
-            "options": types.Schema(
-                type=types.Type.ARRAY,
-                items=types.Schema(
-                    type=types.Type.OBJECT,
-                    properties={
-                        "title": types.Schema(type=types.Type.STRING),
-                        "description": types.Schema(type=types.Type.STRING),
-                        "lyria_prompt": types.Schema(type=types.Type.STRING)
-                    },
-                    required=["title", "description", "lyria_prompt"]
-                )
-            )
-        },
-        required=["options"]
-    )
     
     response = client.models.generate_content(
         model='gemini-3.5-flash',
         contents=prompt_parts,
         config=types.GenerateContentConfig(
             response_mime_type="application/json",
-            response_schema=response_schema,
             temperature=0.7
         )
     )
@@ -223,11 +204,20 @@ def analyze_with_gemini(video_path: str, ref_audio_path: str, video_title: str, 
         pass
         
     try:
-        data = json.loads(response.text)
-        return MusicOptionsResponse(**data)
+        raw_text = response.text.strip()
+        if raw_text.startswith("```json"):
+            raw_text = raw_text[7:]
+        if raw_text.startswith("```"):
+            raw_text = raw_text[3:]
+        if raw_text.endswith("```"):
+            raw_text = raw_text[:-3]
+        raw_text = raw_text.strip()
+        
+        data = json.loads(raw_text)
+        return MusicOptionsResponse(**{"options": data.get("options", [])})
     except Exception as e:
-        print("Failed to parse Gemini JSON:", response.text)
-        raise Exception(f"Failed to parse Gemini response: {str(e)}")
+        print(f"Failed to parse Gemini response: {response.text}")
+        raise ValueError(f"Failed to parse Gemini response: {str(e)}")
 
 
 @app.post("/api/analyze")
