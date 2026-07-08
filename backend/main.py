@@ -297,10 +297,12 @@ def generate_music_endpoint(request: GenerateRequest):
         print(f"Error in /api/generate: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
+# Define paths first
+FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")
+
 @app.get("/")
 def read_root():
-    return FileResponse("frontend/index.html")
+    return FileResponse(os.path.join(FRONTEND_DIR, "index.html"))
 
 # Serve frontend static files
-FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")
 app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
