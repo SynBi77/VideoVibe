@@ -147,8 +147,17 @@ def analyze_with_gemini(video_path: str, ref_audio_path: str, video_title: str, 
         "3. 'lyria_prompt': A comma-separated English prompt for the Lyria 3 model. The prompt MUST include 'instrumental only, no vocals' to ensure it is purely BGM, and it MUST end with 'high quality studio master, punchy mix, clean production, spatial audio'. (e.g., 'Cinematic synthwave, slow build-up, heavy low bass, instrumental only, no vocals, high quality studio master, punchy mix, clean production, spatial audio').\n"
     )
 
+    def robust_upload(filepath):
+        try:
+            return client.files.upload(file=filepath)
+        except TypeError:
+            try:
+                return client.files.upload(path=filepath)
+            except TypeError:
+                return client.files.upload(filepath)
+
     print("Uploading video file to Gemini...", flush=True)
-    uploaded_video = client.files.upload(file=video_path)
+    uploaded_video = robust_upload(video_path)
     
     while uploaded_video.state.name == "PROCESSING":
         time.sleep(2)
@@ -162,7 +171,7 @@ def analyze_with_gemini(video_path: str, ref_audio_path: str, video_title: str, 
     uploaded_ref = None
     if ref_audio_path:
         print("Uploading reference audio to Gemini...", flush=True)
-        uploaded_ref = client.files.upload(file=ref_audio_path)
+        uploaded_ref = robust_upload(ref_audio_path)
         while uploaded_ref.state.name == "PROCESSING":
             time.sleep(2)
             uploaded_ref = client.files.get(name=uploaded_ref.name)
