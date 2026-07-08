@@ -7,6 +7,17 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        if (sessionStorage.getItem("vibe_auth") !== "true") {
+            let pwd = prompt("해커톤 심사용 데모 페이지입니다. 접속 비밀번호를 입력해주세요:");
+            if (pwd === "vibe") {
+                sessionStorage.setItem("vibe_auth", "true");
+            } else {
+                alert("접근 권한이 없습니다.");
+                window.location.href = "https://google.com";
+            }
+        }
+    </script>
 </head>
 <body>
     <div class="background-blobs">
