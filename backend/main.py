@@ -145,6 +145,7 @@ def analyze_with_gemini(video_path: str, ref_audio_path: str, video_title: str, 
         "1. 'title': A short, user-friendly Korean title (e.g., '묵직하고 긴장감 넘치는 텐션').\n"
         "2. 'description': A 1-2 sentence Korean description explaining why this fits the video.\n"
         "3. 'lyria_prompt': A comma-separated English prompt for the Lyria 3 model. The prompt MUST include 'instrumental only, no vocals' to ensure it is purely BGM, and it MUST end with 'high quality studio master, punchy mix, clean production, spatial audio'. (e.g., 'Cinematic synthwave, slow build-up, heavy low bass, instrumental only, no vocals, high quality studio master, punchy mix, clean production, spatial audio').\n"
+        "You MUST return a JSON object with a single key 'options' that contains a list of these objects."
     )
 
     def robust_upload(filepath):
@@ -188,7 +189,6 @@ def analyze_with_gemini(video_path: str, ref_audio_path: str, video_title: str, 
         contents=prompt_parts,
         config=types.GenerateContentConfig(
             response_mime_type="application/json",
-            response_schema=MusicOptionsResponse,
             temperature=0.7
         )
     )
