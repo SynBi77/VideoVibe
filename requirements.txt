@@ -1,6 +1,6 @@
 fastapi==0.115.0
 uvicorn==0.32.0
-yt-dlp==2024.9.27
+yt-dlp
 google-genai==0.2.2
 pydantic==2.9.2
 python-dotenv==1.0.1

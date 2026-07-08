@@ -54,6 +54,7 @@ def download_audio(url: str, output_path: str):
         'outtmpl': f"{output_path}.%(ext)s",
         'quiet': True,
         'no_warnings': True,
+        'extractor_args': {'youtube': ['player_client=ios,android_creator']}
     }
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -72,6 +73,7 @@ def download_video(url: str, output_path: str):
         'outtmpl': f"{output_path}.%(ext)s",
         'quiet': True,
         'no_warnings': True,
+        'extractor_args': {'youtube': ['player_client=ios,android_creator']}
     }
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
