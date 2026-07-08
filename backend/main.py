@@ -156,14 +156,17 @@ def analyze_with_gemini(video_path: str, ref_audio_path: str, video_title: str, 
             except TypeError:
                 return client.files.upload(filepath)
 
+    def get_state(file_obj):
+        return file_obj.state.name if hasattr(file_obj.state, "name") else str(file_obj.state)
+
     print("Uploading video file to Gemini...", flush=True)
     uploaded_video = robust_upload(video_path)
     
-    while uploaded_video.state.name == "PROCESSING":
+    while get_state(uploaded_video) == "PROCESSING":
         time.sleep(2)
         uploaded_video = client.files.get(name=uploaded_video.name)
         
-    if uploaded_video.state.name == "FAILED":
+    if get_state(uploaded_video) == "FAILED":
         raise Exception("Gemini failed to process the uploaded video.")
         
     prompt_parts = [system_prompt, uploaded_video]
@@ -172,10 +175,10 @@ def analyze_with_gemini(video_path: str, ref_audio_path: str, video_title: str, 
     if ref_audio_path:
         print("Uploading reference audio to Gemini...", flush=True)
         uploaded_ref = robust_upload(ref_audio_path)
-        while uploaded_ref.state.name == "PROCESSING":
+        while get_state(uploaded_ref) == "PROCESSING":
             time.sleep(2)
             uploaded_ref = client.files.get(name=uploaded_ref.name)
-        if uploaded_ref.state.name == "FAILED":
+        if get_state(uploaded_ref) == "FAILED":
             raise Exception("Gemini failed to process the uploaded reference audio.")
         prompt_parts.append(uploaded_ref)
         
