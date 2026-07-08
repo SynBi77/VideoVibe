@@ -56,6 +56,11 @@ def download_audio(url: str, output_path: str):
         'no_warnings': True,
         'extractor_args': {'youtube': ['player_client=ios,android_creator']}
     }
+    
+    cookie_path = "/etc/secrets/cookies.txt"
+    if os.path.exists(cookie_path):
+        ydl_opts['cookiefile'] = cookie_path
+        
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
@@ -82,6 +87,11 @@ def download_video(url: str, output_path: str):
         'no_warnings': True,
         'extractor_args': {'youtube': ['player_client=ios,android_creator']}
     }
+    
+    cookie_path = "/etc/secrets/cookies.txt"
+    if os.path.exists(cookie_path):
+        ydl_opts['cookiefile'] = cookie_path
+        
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
