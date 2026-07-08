@@ -246,6 +246,5 @@ def generate_music_endpoint(request: GenerateRequest):
         print(f"Error in /api/generate: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.get("/")
-def read_root():
-    return {"message": "VideoVibe API is running."}
+# Serve frontend static files
+app.mount("/", StaticFiles(directory="frontend", html=True), name="frontend")
