@@ -297,6 +297,37 @@ def generate_music_endpoint(request: GenerateRequest):
         print(f"Error in /api/generate: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
+# ---------------------------------------------
+# Stats Counter
+# ---------------------------------------------
+STATS_FILE = os.path.join(BASE_DIR, "stats.json")
+
+def get_download_count():
+    if os.path.exists(STATS_FILE):
+        with open(STATS_FILE, "r") as f:
+            try:
+                data = json.load(f)
+                return data.get("downloads", 0)
+            except:
+                return 0
+    return 0
+
+def increment_download_count():
+    count = get_download_count() + 1
+    with open(STATS_FILE, "w") as f:
+        json.dump({"downloads": count}, f)
+    return count
+
+@app.get("/api/stats")
+def read_stats():
+    return {"downloads": get_download_count()}
+
+@app.post("/api/stats/download")
+def record_download():
+    new_count = increment_download_count()
+    return {"downloads": new_count}
+
+
 # Define paths first
 FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")
 

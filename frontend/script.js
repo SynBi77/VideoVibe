@@ -1,4 +1,24 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Stats logic
+    const countSpan = document.getElementById('dl-count-num');
+    
+    async function fetchStats() {
+        try {
+            const res = await fetch('/api/stats');
+            const data = await res.json();
+            if (countSpan) countSpan.textContent = data.downloads;
+        } catch(e) {}
+    }
+    
+    async function incrementStats() {
+        try {
+            const res = await fetch('/api/stats/download', {method: 'POST'});
+            const data = await res.json();
+            if (countSpan) countSpan.textContent = data.downloads;
+        } catch(e) {}
+    }
+    
+    fetchStats();
     const generateBtn = document.getElementById('generate-btn');
     const youtubeInput = document.getElementById('youtube-url');
     
@@ -182,6 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function showResult(title, prompt, audioUrl) {
+        incrementStats();
         loadingSection.classList.add('hidden');
         resultSection.classList.remove('hidden');
         
