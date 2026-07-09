@@ -267,13 +267,36 @@ def generate_music_endpoint(request: GenerateRequest):
         
         lyria_response = client.models.generate_content(
             model='lyria-3-pro-preview',
-            contents=lyria_prompt
+            contents=lyria_prompt,
+            config=types.GenerateContentConfig(
+                safety_settings=[
+                    types.SafetySetting(
+                        category=types.HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+                        threshold=types.HarmBlockThreshold.BLOCK_NONE,
+                    ),
+                    types.SafetySetting(
+                        category=types.HarmCategory.HARM_CATEGORY_HARASSMENT,
+                        threshold=types.HarmBlockThreshold.BLOCK_NONE,
+                    ),
+                    types.SafetySetting(
+                        category=types.HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+                        threshold=types.HarmBlockThreshold.BLOCK_NONE,
+                    ),
+                    types.SafetySetting(
+                        category=types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+                        threshold=types.HarmBlockThreshold.BLOCK_NONE,
+                    ),
+                ]
+            )
         )
         
         final_audio_url = ""
         lyrics = ""
         
         for candidate in lyria_response.candidates:
+            if not candidate.content:
+                print(f"Warning: Blocked candidate. Finish reason: {candidate.finish_reason}")
+                continue
             for part in candidate.content.parts:
                 if part.inline_data:
                     unique_id = uuid.uuid4().hex[:8]
